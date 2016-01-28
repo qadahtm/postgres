@@ -1727,7 +1727,7 @@ spi_dest_startup(DestReceiver *self, int operation, TupleDesc typeinfo)
 	MemoryContext tuptabcxt;
 
 	/***** Yahya's Addition ****/
-	ereport(LOG, (errmsg("THIS IS SPI - Receive Tups from Exec into spi-TT!!")));
+	ereport(LOG, (errmsg("THIS IS SPI - Receive Tups from Exec into spiTT!!")));
 
 	/*
 	 * When called by Executor _SPI_curid expected to be equal to

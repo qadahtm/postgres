@@ -47,9 +47,6 @@ static void tstoreReceiveSlot_detoast(TupleTableSlot *slot, DestReceiver *self);
 static void
 tstoreStartupReceiver(DestReceiver *self, int operation, TupleDesc typeinfo)
 {
-	/***** Yahya's Addition ****/
-	ereport(LOG, (errmsg("THIS IS tStoreReceiver - PREPARE!!")));
-
 	TStoreState *myState = (TStoreState *) self;
 	bool		needtoast = false;
 	Form_pg_attribute *attrs = typeinfo->attrs;
@@ -96,9 +93,6 @@ tstoreStartupReceiver(DestReceiver *self, int operation, TupleDesc typeinfo)
 static void
 tstoreReceiveSlot_notoast(TupleTableSlot *slot, DestReceiver *self)
 {
-	/***** Yahya's Addition ****/
-	ereport(LOG, (errmsg("THIS IS tStoreReceiver - RECEIVE FROM EXCTR AND STORE - NOTOAST!!")));
-
 	TStoreState *myState = (TStoreState *) self;
 
 	tuplestore_puttupleslot(myState->tstore, slot);
@@ -111,9 +105,6 @@ tstoreReceiveSlot_notoast(TupleTableSlot *slot, DestReceiver *self)
 static void
 tstoreReceiveSlot_detoast(TupleTableSlot *slot, DestReceiver *self)
 {
-	/***** Yahya's Addition ****/
-	ereport(LOG, (errmsg("THIS IS tStoreReceiver - RECEIVE FROM EXCTR AND STORE - DETOAST!!")));
-
 	TStoreState *myState = (TStoreState *) self;
 	TupleDesc	typeinfo = slot->tts_tupleDescriptor;
 	Form_pg_attribute *attrs = typeinfo->attrs;

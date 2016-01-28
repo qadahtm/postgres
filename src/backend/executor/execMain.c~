@@ -303,10 +303,6 @@ standard_ExecutorRun(QueryDesc *queryDesc,
 	Assert(estate != NULL);
 	Assert(!(estate->es_top_eflags & EXEC_FLAG_EXPLAIN_ONLY));
 
-	/**** Yahya's Addition ***/
-	
-	ereport(LOG, (errmsg("BELIEVE!!")));
-
 	/*
 	 * Switch into per-query memory context
 	 */
