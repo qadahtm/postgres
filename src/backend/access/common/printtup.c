@@ -311,7 +311,7 @@ printtup(TupleTableSlot *slot, DestReceiver *self)
 
 	/***** Yahya's Addition ****/
 	/** ereport(LOG, (errmsg("printtup --- print a tuple in protocol 3.0"))); **/
-	/**Form_pg_attribute attributes = &(typeinfo->attrs); **/
+	Form_pg_attribute *attributes = typeinfo->attrs;
 
 	/* Set or update my derived attribute info, if needed */
 	if (myState->attrinfo != typeinfo || myState->nattrs != natts)
@@ -364,8 +364,8 @@ printtup(TupleTableSlot *slot, DestReceiver *self)
 			pq_sendcountedtext(&buf, outputstr, strlen(outputstr), false);
 			
 			/***** Yahya's Addition ****/
-			/*if (namestrcmp (attributes->attname, 'xmin') == 0 || namestrcmp (attributes->attname, 'oid') == 0)*/
-			if (i == 0 || i == 1)
+			if (strcmp (NameStr(attributes[i]->attname), "xmin") == 0 || strcmp (NameStr(attributes[i]->attname), "oid") == 0)
+			/** if (i == 0 || i == 1) **/
 			{			
 				ereport(LOG, (errmsg(outputstr)));
 			}
