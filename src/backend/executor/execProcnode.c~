@@ -529,7 +529,7 @@ ExecProcNode(PlanState *node)
 	if (node->instrument)
 		InstrStopNode(node->instrument, TupIsNull(result) ? 0.0 : 1.0);
 
-/******************* Yahya's Test **************
+/******************* Yahya's Test **************/
 	if (result->tts_nvalid == result->tts_tupleDescriptor->natts)
 		ereport(LOG, (errmsg("Tuple is Virtual")));
 
@@ -539,7 +539,7 @@ ExecProcNode(PlanState *node)
 	else
 		ereport(LOG, (errmsg("Tuple is Physical")));
 
-*/
+
 	return result;
 }
 

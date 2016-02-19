@@ -22,6 +22,8 @@
 #include "utils/lsyscache.h"
 #include "utils/memdebug.h"
 #include "utils/memutils.h"
+#include "executor/tuptable.h"
+#include "access/htup_details.h"
 
 
 static void printtup_startup(DestReceiver *self, int operation,
@@ -306,12 +308,16 @@ printtup(TupleTableSlot *slot, DestReceiver *self)
 	DR_printtup *myState = (DR_printtup *) self;
 	MemoryContext oldcontext;
 	StringInfoData buf;
-	int			natts = typeinfo->natts;
-	int			i;
+	int natts = typeinfo->natts;
+	int i;
 
 	/***** Yahya's Addition ****/
-	/** ereport(LOG, (errmsg("printtup --- print a tuple in protocol 3.0"))); **/
+	/** ereport(LOG, (errmsg("printtup --- print a tuple in protocol 3.0"))); **
+	TransactionId tx = GetTopTransactionId();
+	char *txid = palloc (18);
+	sprintf (txid, "%u", tx);
 	Form_pg_attribute *attributes = typeinfo->attrs;
+*/
 
 	/* Set or update my derived attribute info, if needed */
 	if (myState->attrinfo != typeinfo || myState->nattrs != natts)
@@ -330,13 +336,43 @@ printtup(TupleTableSlot *slot, DestReceiver *self)
 
 	pq_sendint(&buf, natts, 2);
 
+/******************* Yahya's Test *********************/
+
+/*	if (slot->tts_tuple != NULL)
+		ereport(LOG, (errmsg("Tuple is physical")));
+
+	else if (slot->tts_mintuple != NULL)
+		ereport(LOG, (errmsg("Tuple is minimal tuple ")));	
+	
+	else
+		ereport(LOG, (errmsg("Tuple is Virtual")));
+*/
+/*************** Intense Coding - Yahya ************************
+
+bool *snull = false;
+HeapTuple tuple;
+tuple = ExecFetchSlotTuple(slot);
+Datum heapval; 
+heapval = heap_getattr(tuple, -1, slot->tts_tupleDescriptor, snull);
+
+*/
+
+/**************************************************************/
+
+/*	ereport(LOG, (errmsg(txid)));              */  
+/*	Datum val = slot_getattr(slot, -1, false);  If you want to get attribute from slot, tuptable.h 
+	char *valstring = DatumGetCString(heapval);
+	ereport(LOG, (errmsg("OID:%s , Transaction ID: %s",valstring, txid)));
+	pfree(txid);
+
+*/
 	/*
 	 * send the attributes of this tuple
 	 */
 	for (i = 0; i < natts; ++i)
 	{
 		PrinttupAttrInfo *thisState = myState->myinfo + i;
-		Datum		attr = slot->tts_values[i];
+		Datum attr = slot->tts_values[i];
 
 		if (slot->tts_isnull[i])
 		{
@@ -364,11 +400,12 @@ printtup(TupleTableSlot *slot, DestReceiver *self)
 			pq_sendcountedtext(&buf, outputstr, strlen(outputstr), false);
 			
 			/***** Yahya's Addition ****/
-			if (strcmp (NameStr(attributes[i]->attname), "xmin") == 0 || strcmp (NameStr(attributes[i]->attname), "oid") == 0)
-			/** if (i == 0 || i == 1) **/
+		/*if (strcmp (NameStr(attributes[i]->attname), "xmin") == 0 || strcmp (NameStr(attributes[i]->attname), "oid") == 0) */
+			/** if (i == 0 || i == 1)
 			{			
 				ereport(LOG, (errmsg(outputstr)));
 			}
+		*/
 		}
 		else
 		{

@@ -802,15 +802,6 @@ ExecUpdate(ItemPointer tupleid,
 	HeapUpdateFailureData hufd;
 	List	   *recheckIndexes = NIL;
 
-/*	Yahya's Declarations */ 
-
-	TransactionId tx = GetTopTransactionId();
-	char *txid = palloc (18);
-	char *tupid = palloc (18);
-	sprintf (txid, "%u", tx);
-	HeapTuple tupple;
-	Oid tupleoid;
-
 	/***** Yahya's Addition ****/
 	ereport(LOG, (errmsg("THIS IS nodeModifyTable.c - ExecUpdate")));
 
@@ -1039,14 +1030,6 @@ lreplace:;
 	if (resultRelInfo->ri_projectReturning)
 		return ExecProcessReturning(resultRelInfo->ri_projectReturning,
 									slot, planSlot);
-
-/*** Yahya's Addition **/ 	
-	tupleoid = HeapTupleHeaderGetOid(tuple->t_data);  
-	sprintf (tupid, "%u", tupleoid);
-	ereport(LOG, (errmsg("OID:%s , Transaction ID: %s", tupid, txid)));
-
-	pfree(txid);
-	pfree(tupid);
 
 	return NULL;
 }

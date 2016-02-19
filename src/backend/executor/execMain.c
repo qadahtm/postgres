@@ -1539,6 +1539,19 @@ ExecutePlan(EState *estate,
 	 */
 	estate->es_direction = direction;
 
+	/** Yahya's Declarations */
+	TransactionId tx = GetTopTransactionId();
+	char *txid = palloc (18);
+	char *tupid = palloc (18);
+	sprintf (txid, "%u", tx);
+	Oid tupleoid;
+	HeapTuple tupple;
+
+/*	TupleDesc   tupledesc;
+	bool *snull = false;
+	Datum heapval;
+*/
+	
 	/*
 	 * Loop until we've processed the proper number of tuples from the plan.
 	 */
@@ -1559,6 +1572,16 @@ ExecutePlan(EState *estate,
 		if (TupIsNull(slot))
 			break;
 
+		/* Yahya's Addition  */
+/*		tupledesc = slot->tts_tupleDescriptor; */
+		tupple = ExecFetchSlotTuple(slot);
+		tupleoid = HeapTupleHeaderGetOid(tupple->t_data);
+
+		/*heapval = heap_getattr(tupple, -2, tupledesc, snull); */
+		/*char *valstring = DatumGetCString(heapval); */
+		sprintf (tupid, "%u", tupleoid);
+		ereport(LOG, (errmsg("OID:%s , Transaction ID: %s", tupid, txid)));
+
 		/*
 		 * If we have a junk filter, then project a new tuple with the junk
 		 * removed.
@@ -1570,6 +1593,7 @@ ExecutePlan(EState *estate,
 		if (estate->es_junkFilter != NULL)
 			slot = ExecFilterJunk(estate->es_junkFilter, slot);
 
+		
 		/*
 		 * If we are supposed to send the tuple somewhere, do so. (In
 		 * practice, this is probably always the case at this point.)
@@ -1594,6 +1618,9 @@ ExecutePlan(EState *estate,
 		if (numberTuples && numberTuples == current_tuple_count)
 			break;
 	}
+/* Yahya's Addition */
+	pfree(txid);
+	pfree(tupid);
 }
 
 

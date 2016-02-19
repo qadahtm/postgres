@@ -534,10 +534,9 @@ fetch_input_tuple(AggState *aggstate)
 */
 	return slot;
 
-/* Yahya's Addition
+/* Yahya's Addition */
 	pfree(txid);
 	pfree(tupid);
-*/
 
 }
 
