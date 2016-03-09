@@ -347,7 +347,7 @@ printtup(TupleTableSlot *slot, DestReceiver *self)
 	else
 		ereport(LOG, (errmsg("Tuple is Virtual")));
 */
-/*************** Intense Coding - Yahya ************************
+/*************** Intense Coding - Yahya ***********************
 
 bool *snull = false;
 HeapTuple tuple;

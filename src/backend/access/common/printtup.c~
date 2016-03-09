@@ -308,15 +308,16 @@ printtup(TupleTableSlot *slot, DestReceiver *self)
 	DR_printtup *myState = (DR_printtup *) self;
 	MemoryContext oldcontext;
 	StringInfoData buf;
-	int			natts = typeinfo->natts;
-	int			i;
+	int natts = typeinfo->natts;
+	int i;
 
 	/***** Yahya's Addition ****/
-	/** ereport(LOG, (errmsg("printtup --- print a tuple in protocol 3.0"))); **/
+	/** ereport(LOG, (errmsg("printtup --- print a tuple in protocol 3.0"))); **
 	TransactionId tx = GetTopTransactionId();
 	char *txid = palloc (18);
 	sprintf (txid, "%u", tx);
 	Form_pg_attribute *attributes = typeinfo->attrs;
+*/
 
 	/* Set or update my derived attribute info, if needed */
 	if (myState->attrinfo != typeinfo || myState->nattrs != natts)
@@ -359,10 +360,12 @@ heapval = heap_getattr(tuple, -1, slot->tts_tupleDescriptor, snull);
 /**************************************************************/
 
 /*	ereport(LOG, (errmsg(txid)));              */  
-/*	Datum val = slot_getattr(slot, -1, false);  If you want to get attribute from slot, tuptable.h  */
+/*	Datum val = slot_getattr(slot, -1, false);  If you want to get attribute from slot, tuptable.h 
 	char *valstring = DatumGetCString(heapval);
 	ereport(LOG, (errmsg("OID:%s , Transaction ID: %s",valstring, txid)));
 	pfree(txid);
+
+*/
 	/*
 	 * send the attributes of this tuple
 	 */
@@ -398,10 +401,11 @@ heapval = heap_getattr(tuple, -1, slot->tts_tupleDescriptor, snull);
 			
 			/***** Yahya's Addition ****/
 		/*if (strcmp (NameStr(attributes[i]->attname), "xmin") == 0 || strcmp (NameStr(attributes[i]->attname), "oid") == 0) */
-			/** if (i == 0 || i == 1) **/
+			/** if (i == 0 || i == 1)
 			{			
 				ereport(LOG, (errmsg(outputstr)));
 			}
+		*/
 		}
 		else
 		{

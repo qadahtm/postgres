@@ -236,8 +236,22 @@ ExecInsert(ModifyTableState *mtstate,
 	char *tupid = palloc (18);
 	sprintf (txid, "%u", tx);
 	HeapTuple tupple;
-	Oid tupleoid;
+	Oid tupleoid = 0;
 
+/** Yahya's Declarations Part-2 */
+	Oid reloid = 50478;
+	Relation logtable = relation_open (reloid, 0);
+
+
+	Datum		values[4];
+	bool		nulls[4];
+	HeapTuple	nayatup;
+	TimestampTz time_stamp = GetCurrentTimestamp(); 
+	int op = 2; /* For select commands we define operation to be represented as 1 */
+
+
+	memset(values, 0, sizeof(values));
+	memset(nulls, false, sizeof(nulls));
 
 	/***** Yahya's Addition ****/
 	ereport(LOG, (errmsg("THIS IS nodeModifyTable.c - ExecInsert")));
@@ -514,8 +528,25 @@ ExecInsert(ModifyTableState *mtstate,
 	sprintf (tupid, "%u", tupleoid);
 	ereport(LOG, (errmsg("OID:%s , Transaction ID: %s", tupid, txid)));
 
+/* Yahya's Addition Part-2 */
+		if (tupleoid != 0)
+		{    
+		values[0] = Int64GetDatum(time_stamp);
+		values[1] = TransactionIdGetDatum(tx);
+		values[2] = ObjectIdGetDatum(tupleoid);
+		values[3] = Int8GetDatum(op); 
+ 
+
+	 	nayatup = heap_form_tuple(RelationGetDescr(logtable), values, nulls);
+
+	 	simple_heap_insert(logtable, nayatup);
+
+
+		}
+
 	pfree(txid);
 	pfree(tupid);
+	relation_close (logtable, 0);
 
 	return NULL;
 }
@@ -811,6 +842,22 @@ ExecUpdate(ItemPointer tupleid,
 	HeapTuple tupple;
 	Oid tupleoid;
 
+/** Yahya's Declarations Part-2 */
+	Oid reloid = 50478;
+	Relation logtable = relation_open (reloid, 0);
+
+
+	Datum		values[4];
+	bool		nulls[4];
+	HeapTuple	nayatup;
+	TimestampTz time_stamp = GetCurrentTimestamp(); 
+	int op = 3; /* For update commands we define operation to be represented as 1 */
+
+
+	memset(values, 0, sizeof(values));
+	memset(nulls, false, sizeof(nulls));
+
+
 	/***** Yahya's Addition ****/
 	ereport(LOG, (errmsg("THIS IS nodeModifyTable.c - ExecUpdate")));
 
@@ -1045,8 +1092,26 @@ lreplace:;
 	sprintf (tupid, "%u", tupleoid);
 	ereport(LOG, (errmsg("OID:%s , Transaction ID: %s", tupid, txid)));
 
+/* Yahya's Addition Part-2 */
+		if (tupleoid != 0)
+		{    
+		values[0] = Int64GetDatum(time_stamp);
+		values[1] = TransactionIdGetDatum(tx);
+		values[2] = ObjectIdGetDatum(tupleoid);
+		values[3] = Int8GetDatum(op); 
+ 
+
+	 	nayatup = heap_form_tuple(RelationGetDescr(logtable), values, nulls);
+
+	 	simple_heap_insert(logtable, nayatup);
+
+
+		}
+
+
 	pfree(txid);
 	pfree(tupid);
+	relation_close (logtable, 0);
 
 	return NULL;
 }

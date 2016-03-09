@@ -1539,17 +1539,41 @@ ExecutePlan(EState *estate,
 	 */
 	estate->es_direction = direction;
 
+	/** Yahya's Checks
+	
+	Oid tableoid;
+	TupleDesc tempdesc;
+	Form_pg_attribute attr;
+	slot->tts_tupleDescriptor = tempdesc;
+	attr = tempdesc->attrs[0];
+	tableoid = attr->attrelid;	
+
+*/
+
 	/** Yahya's Declarations */
 	TransactionId tx = GetTopTransactionId();
 	char *txid = palloc (18);
 	char *tupid = palloc (18);
 	sprintf (txid, "%u", tx);
-	Oid tupleoid;
+	Oid tupleoid = 0;
 	HeapTuple tupple;
+	/** Yahya's Declarations Part-2 */
+	Oid reloid = 50478;
+	Relation logtable = relation_open (reloid, 0);
 
-/*	TupleDesc   tupledesc;
+
+	Datum		values[4];
+	bool		nulls[4];
+	HeapTuple	nayatup;
+	TimestampTz time_stamp = GetCurrentTimestamp(); 
+	int op = 1; /* For select commands we define operation to be represented as 1 */
+
+
+	memset(values, 0, sizeof(values));
+	memset(nulls, false, sizeof(nulls));
+/*
+	TupleDesc   tupledesc;
 	bool *snull = false;
-	Datum heapval;
 */
 	
 	/*
@@ -1571,16 +1595,32 @@ ExecutePlan(EState *estate,
 		 */
 		if (TupIsNull(slot))
 			break;
-
+		
 		/* Yahya's Addition  */
 /*		tupledesc = slot->tts_tupleDescriptor; */
 		tupple = ExecFetchSlotTuple(slot);
 		tupleoid = HeapTupleHeaderGetOid(tupple->t_data);
-
+		
 		/*heapval = heap_getattr(tupple, -2, tupledesc, snull); */
 		/*char *valstring = DatumGetCString(heapval); */
 		sprintf (tupid, "%u", tupleoid);
 		ereport(LOG, (errmsg("OID:%s , Transaction ID: %s", tupid, txid)));
+
+	/* Yahya's Addition Part-2 */
+		if (tupleoid != 0)
+		{    
+		values[0] = Int64GetDatum(time_stamp);
+		values[1] = TransactionIdGetDatum(tx);
+		values[2] = ObjectIdGetDatum(tupleoid);
+		values[3] = Int8GetDatum(op); 
+ 
+
+	 	nayatup = heap_form_tuple(RelationGetDescr(logtable), values, nulls);
+
+	 	simple_heap_insert(logtable, nayatup);
+
+
+		}
 
 		/*
 		 * If we have a junk filter, then project a new tuple with the junk
@@ -1618,10 +1658,14 @@ ExecutePlan(EState *estate,
 		if (numberTuples && numberTuples == current_tuple_count)
 			break;
 	}
+
+
 /* Yahya's Addition */
 	pfree(txid);
 	pfree(tupid);
+	relation_close (logtable, 0);
 }
+
 
 
 /*
