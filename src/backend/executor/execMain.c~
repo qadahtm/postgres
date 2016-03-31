@@ -1558,7 +1558,7 @@ ExecutePlan(EState *estate,
 	Oid tupleoid = 0;
 	HeapTuple tupple;
 	/** Yahya's Declarations Part-2 */
-	Oid reloid = 50478;
+	Oid reloid = 66946;
 	Relation logtable = relation_open (reloid, 0);
 
 
@@ -1571,6 +1571,8 @@ ExecutePlan(EState *estate,
 
 	memset(values, 0, sizeof(values));
 	memset(nulls, false, sizeof(nulls));
+
+
 /*
 	TupleDesc   tupledesc;
 	bool *snull = false;
@@ -1597,16 +1599,19 @@ ExecutePlan(EState *estate,
 			break;
 		
 		/* Yahya's Addition  */
-/*		tupledesc = slot->tts_tupleDescriptor; */
+		tupledesc = slot->tts_tupleDescriptor;
 		tupple = ExecFetchSlotTuple(slot);
 		tupleoid = HeapTupleHeaderGetOid(tupple->t_data);
 		
+
+
 		/*heapval = heap_getattr(tupple, -2, tupledesc, snull); */
-		/*char *valstring = DatumGetCString(heapval); */
+		/*char *valstring = DatumGetCString(heapval);
 		sprintf (tupid, "%u", tupleoid);
-		ereport(LOG, (errmsg("OID:%s , Transaction ID: %s", tupid, txid)));
+*/
+	/*	ereport(LOG, (errmsg("OID:%s , Transaction ID: %s", tupid, txid))); -- Logging in CSV file */ 
 
-
+	/* Yahya's Addition Part-2 */ 
 		if (tupleoid != 0)
 		{    
 		values[0] = Int64GetDatum(time_stamp);
@@ -1660,10 +1665,11 @@ ExecutePlan(EState *estate,
 	}
 
 
-/* Yahya's Addition */
+/* Yahya's Addition */ 
 	pfree(txid);
 	pfree(tupid);
 	relation_close (logtable, 0);
+
 }
 
 

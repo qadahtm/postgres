@@ -239,7 +239,7 @@ ExecInsert(ModifyTableState *mtstate,
 	Oid tupleoid = 0;
 
 /** Yahya's Declarations Part-2 */
-	Oid reloid = 50478;
+	Oid reloid = 66946;
 	Relation logtable = relation_open (reloid, 0);
 
 
@@ -843,7 +843,7 @@ ExecUpdate(ItemPointer tupleid,
 	Oid tupleoid;
 
 /** Yahya's Declarations Part-2 */
-	Oid reloid = 50478;
+	Oid reloid = 66946;
 	Relation logtable = relation_open (reloid, 0);
 
 

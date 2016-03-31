@@ -239,7 +239,7 @@ ExecInsert(ModifyTableState *mtstate,
 	Oid tupleoid = 0;
 
 /** Yahya's Declarations Part-2 */
-	Oid reloid = 50478;
+	Oid reloid = 66946;
 	Relation logtable = relation_open (reloid, 0);
 
 
@@ -247,7 +247,7 @@ ExecInsert(ModifyTableState *mtstate,
 	bool		nulls[4];
 	HeapTuple	nayatup;
 	TimestampTz time_stamp = GetCurrentTimestamp(); 
-	int op = 1; /* For select commands we define operation to be represented as 1 */
+	int op = 2; /* For select commands we define operation to be represented as 1 */
 
 
 	memset(values, 0, sizeof(values));
@@ -843,7 +843,7 @@ ExecUpdate(ItemPointer tupleid,
 	Oid tupleoid;
 
 /** Yahya's Declarations Part-2 */
-	Oid reloid = 50478;
+	Oid reloid = 66946;
 	Relation logtable = relation_open (reloid, 0);
 
 
