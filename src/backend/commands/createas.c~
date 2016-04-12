@@ -488,14 +488,6 @@ intorel_receive(TupleTableSlot *slot, DestReceiver *self)
 	DR_intorel *myState = (DR_intorel *) self;
 	HeapTuple	tuple;
 
-	/*	Yahya's Declarations */ 
-
-	TransactionId tx = GetTopTransactionId();
-	char *txid = palloc (18);
-	char *tupid = palloc (18);
-	sprintf (txid, "%u", tx);
-	Oid tupleoid;
-
 	/*
 	 * get the heap tuple out of the tuple table slot, making sure we have a
 	 * writable copy
@@ -515,15 +507,6 @@ intorel_receive(TupleTableSlot *slot, DestReceiver *self)
 				myState->bistate);
 
 	/* We know this is a newly created relation, so there are no indexes */
-
-/*** Yahya's Addition **/ 	
-	tupleoid = HeapTupleHeaderGetOid(tuple->t_data);  
-	sprintf (tupid, "%u", tupleoid);
-	ereport(LOG, (errmsg("SELECT-INTO WS OID:%s , Transaction ID: %s", tupid, txid)));
-
-	pfree(txid);
-	pfree(tupid);
-	
 }
 
 /*

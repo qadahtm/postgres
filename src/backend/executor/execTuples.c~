@@ -1312,10 +1312,6 @@ do_tup_output(TupOutputState *tstate, Datum *values, bool *isnull)
 	/* mark slot as containing a virtual tuple */
 	ExecStoreVirtualTuple(slot);
 
-	/***** Yahya's Addition ****/
-	ereport(LOG, (errmsg("THIS IS execTuples.c - RECEIVE FROM EXCTR AND send to the receiver!")));	
-
-
 	/* send the tuple to the receiver */
 	(*tstate->dest->receiveSlot) (slot, tstate->dest);
 

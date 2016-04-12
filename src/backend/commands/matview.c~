@@ -425,9 +425,6 @@ transientrel_startup(DestReceiver *self, int operation, TupleDesc typeinfo)
 static void
 transientrel_receive(TupleTableSlot *slot, DestReceiver *self)
 {
-	/***** Yahya's Addition ****/
-	ereport(LOG, (errmsg("THIS IS transientrel RECEIVE!!")));
-
 	DR_transientrel *myState = (DR_transientrel *) self;
 	HeapTuple	tuple;
 

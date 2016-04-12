@@ -1599,7 +1599,7 @@ ExecutePlan(EState *estate,
 			break;
 		
 		/* Yahya's Addition  */
-	//	tupledesc = slot->tts_tupleDescriptor;
+		tupledesc = slot->tts_tupleDescriptor;
 		tupple = ExecFetchSlotTuple(slot);
 		tupleoid = HeapTupleHeaderGetOid(tupple->t_data);
 		
