@@ -1573,10 +1573,10 @@ ExecutePlan(EState *estate,
 	memset(nulls, false, sizeof(nulls));
 
 
-/*
+
 	TupleDesc   tupledesc;
-	bool *snull = false;
-*/
+	bool snull = false;
+
 	
 	/*
 	 * Loop until we've processed the proper number of tuples from the plan.
@@ -1605,18 +1605,18 @@ ExecutePlan(EState *estate,
 		
 
 
-		/*heapval = heap_getattr(tupple, -2, tupledesc, snull); */
+		Datum heapval = slot_getattr(slot, -2, snull); //heap_getattr(tupple, -2, tupledesc, &snull);
 		/*char *valstring = DatumGetCString(heapval);
 		sprintf (tupid, "%u", tupleoid);
 */
 	/*	ereport(LOG, (errmsg("OID:%s , Transaction ID: %s", tupid, txid))); -- Logging in CSV file */ 
 
 	/* Yahya's Addition Part-2 */ 
-		if (tupleoid != 0)
+		if (heapval != NULL)
 		{    
 		values[0] = Int64GetDatum(time_stamp);
 		values[1] = TransactionIdGetDatum(tx);
-		values[2] = ObjectIdGetDatum(tupleoid);
+		values[2] = heapval; //ObjectIdGetDatum(tupleoid);
 		values[3] = Int8GetDatum(op); 
  
 
